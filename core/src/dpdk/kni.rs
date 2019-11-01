@@ -60,7 +60,8 @@ pub struct KniTxQueue {
 impl KniTxQueue {
     pub fn transmit(&mut self, packets: Vec<Mbuf>) {
         if let Err(err) = self.tx_enque.try_send(packets) {
-            warn!(message = "failed to send to tx queue.", ?err);
+            warn!(message = "failed to send to kni tx queue.");
+            Mbuf::free_bulk(err.into_inner());
         }
     }
 }
