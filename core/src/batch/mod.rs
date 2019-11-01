@@ -239,6 +239,13 @@ pub trait Pipeline: futures::Future<Output = ()> {
     fn run_once(&mut self);
 }
 
+/// Splices a `PacketRx` directly to a `PacketTx` without any intermediary
+/// combinators. Useful for pipelines that perform simple forwarding without
+/// any packet processing.
+pub fn splice<Rx: PacketRx + Unpin, Tx: PacketTx + Unpin>(rx: Rx, tx: Tx) -> impl Pipeline {
+    Poll::new(rx).send(tx)
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;

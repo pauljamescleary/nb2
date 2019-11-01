@@ -1,28 +1,7 @@
-use nb2::packets::{Ethernet, Packet};
 use nb2::settings::load_config;
-use nb2::{Batch, KniRx, Pipeline, Poll, PortQueue, Result, Runtime};
+use nb2::{batch, Result, Runtime};
 use tracing::{debug, Level};
 use tracing_subscriber::fmt;
-
-fn install_rx(q: PortQueue) -> impl Pipeline {
-    Poll::new(q.clone())
-        .for_each(|packet| {
-            let eth = packet.peek::<Ethernet>()?;
-            println!("to kni: {:?}", eth);
-            Ok(())
-        })
-        .send(q.kni().unwrap().clone())
-}
-
-fn install_tx(kni: KniRx, q: PortQueue) -> impl Pipeline {
-    Poll::new(kni)
-        .for_each(|packet| {
-            let eth = packet.peek::<Ethernet>()?;
-            println!("from kni: {:?}", eth);
-            Ok(())
-        })
-        .send(q)
-}
 
 fn main() -> Result<()> {
     let subscriber = fmt::Subscriber::builder()
@@ -34,7 +13,9 @@ fn main() -> Result<()> {
     debug!(?config);
 
     Runtime::build(config)?
-        .add_pipeline_to_port("kni0", install_rx)?
-        .add_kni_rx_pipeline_to_port("kni0", install_tx)?
+        .add_pipeline_to_port("kni0", |q| {
+            batch::splice(q.clone(), q.kni().unwrap().clone())
+        })?
+        .add_kni_rx_pipeline_to_port("kni0", batch::splice)?
         .execute()
 }

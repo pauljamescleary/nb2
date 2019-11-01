@@ -208,26 +208,26 @@ impl Drop for Kni {
 /// Does not support changing the link MTU.
 extern "C" fn change_mtu(port_id: u16, new_mtu: raw::c_uint) -> raw::c_int {
     warn!("ignored change port {} mtu to {}.", port_id, new_mtu);
-    return -1;
+    -1
 }
 
 /// Does not change the link up/down status, but will return 0 so the
 /// command succeeds.
 extern "C" fn config_network_if(port_id: u16, if_up: u8) -> raw::c_int {
     warn!("ignored change port {} status to {}.", port_id, if_up);
-    return 0;
+    0
 }
 
 /// Does not support changing the link MAC address.
 extern "C" fn config_mac_address(port_id: u16, _mac_addr: *mut u8) -> raw::c_int {
     warn!("ignored change port {} mac address.", port_id);
-    return -1;
+    -1
 }
 
 /// Does not support changing the link promiscusity.
 extern "C" fn config_promiscusity(port_id: u16, to_on: u8) -> raw::c_int {
     warn!("ignored change port {} promiscusity to {}.", port_id, to_on);
-    return -1;
+    -1
 }
 
 /// Builds a KNI device from the configuration values.
