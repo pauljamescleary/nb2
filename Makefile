@@ -2,7 +2,7 @@ CLIPPY_ARGS = --all-targets --all-features -- -D clippy::wildcard_dependencies -
 COVERAGE_PACKAGES = nb2
 COVERAGE_EXCLUDES = macros/*
 
-.PHONY: build clean fmt lint test watch watch-bench watch-test
+.PHONY: build build-rel clean coverage fmt lint test watch watch-bench watch-test
 
 build:
 	@cargo build
