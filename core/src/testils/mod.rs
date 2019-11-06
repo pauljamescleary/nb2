@@ -1,5 +1,6 @@
 mod packet;
 pub mod proptest;
+mod strategy_valgen;
 
 pub mod byte_arrays {
     pub use crate::packets::icmp::v4::ICMPV4_PACKET;
@@ -10,6 +11,7 @@ pub mod byte_arrays {
 }
 
 pub use self::packet::*;
+pub use self::strategy_valgen::*;
 pub use crate::dpdk::{Mempool, SocketId, MEMPOOL};
 
 use crate::dpdk::eal_init;
